@@ -3,11 +3,11 @@
 WiFiUDP Udp;
 unsigned int localPort = 8888;  // local port to listen for UDP packets
 const int timeZone = 0; 
-char isoTime[30];
+char isoTimee[30];
 
 char* GetISODateTime() {
-  sprintf(isoTime, "%4d-%02d-%02dT%02d:%02d:%02d", year(), month(), day(), hour(), minute(), second());
-  return isoTime;
+  sprintf(isoTimee, "%4d-%02d-%02dT%02d:%02d:%02d", year(), month(), day(), hour(), minute(), second());
+  return isoTimee;
 }
 
 const int NTP_PACKET_SIZE = 48; // NTP time is in the first 48 bytes of message

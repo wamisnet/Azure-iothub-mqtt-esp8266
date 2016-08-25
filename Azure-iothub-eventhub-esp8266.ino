@@ -1,32 +1,21 @@
-#include <Wire.h>
 #include <ESP8266WiFi.h>
-#include <TimeLib.h>           // http://playground.arduino.cc/code/time - installed via library manager
-#include <ArduinoJson.h>    // https://github.com/bblanchon/ArduinoJson - installed via library manager
-#include "globals.h"        // global structures and enums used by the applocation
-
-CloudConfig cloud;
-SensorData data;
-
+#include <TimeLib.h>    
+#include "src/AzureIoTHub.h"
+   
 IPAddress timeServer(203, 56, 27, 253); // NTP Server au.pool.ntp.org
 
-void initDeviceConfig() { // Example device configuration
-  cloud.cloudMode = IoTHub;            // CloudMode enumeration: IoTHub and EventHub (default is IoTHub)
-  cloud.publishRateInSeconds = 90;     // limits publishing rate to specified seconds (default is 90 seconds).  Connectivity problems may result if number too small eg 2
-  cloud.sasExpiryDate = 1737504000;    // Expires Wed, 22 Jan 2025 00:00:00 GMT (defaults to Expires Wed, 22 Jan 2025 00:00:00 GMT)
-}
-
 void setup() {
-  initDeviceConfig();
-  initCloudConfig("Your Key", "Sydney");
+ Azure.begin(IoTHub,"Your Key");
 }
 
 void loop() {
-  getFakeWeatherReadings();
 
   if (WiFi.status() == WL_CONNECTED) {
     getCurrentTime();
     Serial.println("push");
-    publishToAzure();
+    DataElement a=DataElement();
+    a.setValue("set",120);
+    Azure.push(&a);
     Serial.println("pushed");
     delay(5000);
   } else {
@@ -44,8 +33,4 @@ void getCurrentTime() {
   }
 }
 
-void getFakeWeatherReadings() {
-  data.temperature = 25;
-  data.humidity = 50;
-  data.pressure = 1000;
-}
+
