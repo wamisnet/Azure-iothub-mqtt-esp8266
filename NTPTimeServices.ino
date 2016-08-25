@@ -1,5 +1,5 @@
 #include <WiFiUdp.h>
-
+//IPAddress timeServer(203, 56, 27, 253); // NTP Server au.pool.ntp.org
 WiFiUDP Udp;
 unsigned int localPort = 8888;  // local port to listen for UDP packets
 const int timeZone = 0; 
@@ -7,6 +7,7 @@ char isoTimee[30];
 
 char* GetISODateTime() {
   sprintf(isoTimee, "%4d-%02d-%02dT%02d:%02d:%02d", year(), month(), day(), hour(), minute(), second());
+  Serial.println(isoTimee);
   return isoTimee;
 }
 

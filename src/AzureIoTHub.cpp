@@ -61,8 +61,6 @@ bool AzureIoTHub::push(DataElement *data)
 	Serial.print(bytesWritten);
 	Serial.print(", Memory ");
 	Serial.print(ESP.getFreeHeap());
-	Serial.print(" Message ");
-	Serial.print(sendCount);
 	Serial.print(", Response chunks ");
 	Serial.print(limit);
 	Serial.print(", Response code: ");

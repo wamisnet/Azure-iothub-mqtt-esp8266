@@ -51,7 +51,7 @@ public:
 	int senddata = 0;
 	bool connect(),
 		push(DataElement *data);
-	void begin(CloudMode _mode, String cs, const char *geo);
+	void begin(CloudMode _mode, String cs);
 	char* GetISODateTime();
 private:
 	const char *GetStringValue(String value);
