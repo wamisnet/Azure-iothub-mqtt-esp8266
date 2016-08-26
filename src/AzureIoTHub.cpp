@@ -42,7 +42,7 @@ bool AzureIoTHub::push(DataElement *data)
 
 
 	tlsClient.flush();
-	Serial.println( buildHttpRequest(data->toCharArray()));
+	//Serial.println( buildHttpRequest(data->toCharArray()));
 	bytesWritten = tlsClient.print(buildHttpRequest(data->toCharArray()));
 
 	String response = "";
