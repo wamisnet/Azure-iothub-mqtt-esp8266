@@ -569,14 +569,17 @@ aJsonClass::print(aJsonObject* item, aJsonStream* stream)
 char*
 aJsonClass::print(aJsonObject* item)
 {
-  char* outBuf = (char*) malloc(PRINT_BUFFER_LEN); /* XXX: Dynamic size. */
-  if (outBuf == NULL)
-    {
-      return NULL;
-    }
-  aJsonStringStream stringStream(NULL, outBuf, PRINT_BUFFER_LEN);
-  print(item, &stringStream);
-  return outBuf;
+	char* out;
+	char* outBuf = (char*)malloc(PRINT_BUFFER_LEN); /* XXX: Dynamic size. */
+	if (outBuf == NULL)
+	{
+		return NULL;
+	}
+	aJsonStringStream stringStream(NULL, outBuf, PRINT_BUFFER_LEN);
+	print(item, &stringStream);
+	out = outBuf;
+	free(outBuf);
+	return out;
 }
 
 // Parser core - when encountering text, process appropriately.
