@@ -1,8 +1,6 @@
 #include <ESP8266WiFi.h>
 #include <TimeLib.h>    
 #include "src/AzureIoTHub.h"
-   
-IPAddress timeServer(203, 56, 27, 253); // NTP Server au.pool.ntp.org
 
 void setup() {
  Azure.begin(IoTHub,"Your Key");
@@ -24,13 +22,5 @@ void loop() {
   }
 }
 
-void getCurrentTime() {
-  int ntpRetryCount = 0;
-  while (timeStatus() == timeNotSet && ++ntpRetryCount < 10) { // get NTP time
-    Serial.println(WiFi.localIP());
-    setSyncProvider(getNtpTime);
-    setSyncInterval(60 * 60);
-  }
-}
 
 
