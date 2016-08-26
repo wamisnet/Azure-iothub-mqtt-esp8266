@@ -1,8 +1,6 @@
 
 #ifndef AzureIoTHub_h
 #define AzureIoTHub_h
-#include <TimeLib.h>           // http://playground.arduino.cc/code/time - installed via library manager
-  // https://github.com/bblanchon/ArduinoJson - installed via library manager
 #include <WiFiClientSecure.h>
 #include "sha256.h"
 #include "Base64.h"
@@ -52,7 +50,6 @@ public:
 	bool connect(),
 		push(DataElement *data);
 	void begin(CloudMode _mode, String cs);
-	char* GetISODateTime();
 private:
 	const char *GetStringValue(String value);
 	String splitStringByIndex(String data, char separator, int index),

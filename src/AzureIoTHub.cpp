@@ -216,21 +216,12 @@ String AzureIoTHub::createEventHubSas(char * key, String url)
 	// END: create SAS
 }
 
-char isoTime[30];
-char* AzureIoTHub::GetISODateTime() {
-
-	sprintf(isoTime, "%4d-%02d-%02dT%02d:%02d:%02d", year(), month(), day(), hour(), minute(), second());
-	Serial.println(isoTime);
-	return isoTime;
-}
-
 
 DataElement::DataElement() {
 	params = aJson.createObject();
 	paJsonObj = aJson.createObject();
 	aJson.addItemToObject(paJsonObj, "params", params);
 	aJson.addStringToObject(paJsonObj, "Dev", cloud.id);
-	aJson.addStringToObject(paJsonObj, "Utc", Azure.GetISODateTime());
 	aJson.addNumberToObject(paJsonObj, "Id",++(Azure.senddata));
 }
 
