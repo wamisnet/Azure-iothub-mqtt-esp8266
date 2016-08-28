@@ -569,7 +569,6 @@ aJsonClass::print(aJsonObject* item, aJsonStream* stream)
 char*
 aJsonClass::print(aJsonObject* item)
 {
-	char* out;
 	char* outBuf = (char*)malloc(PRINT_BUFFER_LEN); /* XXX: Dynamic size. */
 	if (outBuf == NULL)
 	{
@@ -577,9 +576,7 @@ aJsonClass::print(aJsonObject* item)
 	}
 	aJsonStringStream stringStream(NULL, outBuf, PRINT_BUFFER_LEN);
 	print(item, &stringStream);
-	out = outBuf;
-	free(outBuf);
-	return out;
+	return outBuf;
 }
 
 // Parser core - when encountering text, process appropriately.
