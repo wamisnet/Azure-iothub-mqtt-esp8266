@@ -40,10 +40,11 @@ bool AzureIoTHub::push(DataElement *data)
 	if (!tlsClient.connected()) { connect(); }
 	if (!tlsClient.connected()) { return false; }
 
-
+	char* sendData = data->toCharArray();
 	tlsClient.flush();
-	//Serial.println( buildHttpRequest(data->toCharArray()));
-	bytesWritten = tlsClient.print(buildHttpRequest(data->toCharArray()));
+	//Serial.println( buildHttpRequest(sendData));
+	bytesWritten = tlsClient.print(buildHttpRequest(sendData));
+	free(sendData);
 
 	String response = "";
 	String chunk = "";
