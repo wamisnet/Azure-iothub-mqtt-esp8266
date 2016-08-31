@@ -1,4 +1,4 @@
-#include "src/AzureIoTHub.h"
+#include <AzureIoTHub.h>
 
 void setup() {
   Serial.begin(115200);
@@ -8,7 +8,7 @@ void setup() {
 }
 
 void azureCallback(String s) {
-  Serial.print("azured Message arrived [");
+  Serial.print("azure Message arrived [");
   Serial.print(s);
   Serial.println("] ");
 }
@@ -17,7 +17,7 @@ void loop() {
   if (WiFi.status() == WL_CONNECTED) {
     Azure.connect();
     DataElement a = DataElement();
-    a.setValue("set", 120);
+    a.setValue("EspAnalog", analogRead(A0));
     Azure.push(&a);
     Serial.println("pushed");
     delay(2000);

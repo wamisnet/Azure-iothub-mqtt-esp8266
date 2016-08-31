@@ -122,7 +122,7 @@ boolean PubSubClient::connect(const char *id, const char *user, const char *pass
         } else {
             result = _client->connect(this->ip, this->port);
         }
-		Serial.print("result : "); Serial.println(result);
+		//Serial.print("result : "); Serial.println(result);
         if (result == 1) {
             nextMsgId = 1;
             // Leave room in the buffer for header and variable length field
