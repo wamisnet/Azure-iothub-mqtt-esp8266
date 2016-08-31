@@ -9,14 +9,10 @@ PubSubClient mqtt(espClient);
 
 GeneralFunction AzureIoTHub::az;
 
-char buffer[256];
 void AzureIoTHub::callback(char * topic, byte * payload, unsigned int length)
 {
-	for (int i = 0; i < length; i++) {
-		Serial.print((char)payload[i]);
-	}
-	String _azuredata = "testdata";//payload;
-	Serial.println(_azuredata);
+	String _azuredata;
+	for (int i = 0; i < length; i++)_azuredata += (char)payload[i];
 	az(_azuredata);
 }
 
@@ -29,10 +25,10 @@ void AzureIoTHub::begin(String cs){
 	cloud.fullSas = GetStringValue(createIotHubSas(cloud.key, urlEncode(cloud.host) + "/devices/" + (String)cloud.id));
 	cloud.getUrl = GetStringValue("devices/" + (String)cloud.id + "/messages/devicebound/#");
 	mqtt.setServer(cloud.host, 8883);
-	mqtt.setCallback(this->callback);//Azureからのデータを受けた時コールバックする
 }
 
  void AzureIoTHub::setCallback(GeneralFunction _az){
+	 mqtt.setCallback(this->callback);//Azureからのデータを受けた時コールバックする
 	 az = _az;
  }
 bool AzureIoTHub::push(DataElement *data){
