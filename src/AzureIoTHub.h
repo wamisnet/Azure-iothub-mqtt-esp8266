@@ -57,7 +57,7 @@ public:
 	void begin(String cs);
 	void setCallback(GeneralFunction _az);
 private:
-	 GeneralFunction az;
+	static GeneralFunction az;
 	static void callback(char* topic, byte* payload, unsigned int length);
 	const char *GetStringValue(String value);
 	String splitStringByIndex(String data, char separator, int index),
