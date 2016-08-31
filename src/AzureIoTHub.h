@@ -7,6 +7,7 @@
 #include <WiFiUdp.h>
 #include <ESP8266WiFi.h>
 #include "aJson/aJSON.h"
+#include "pubsubclient/PubSubClient.h"
 enum CloudMode {
 	IoTHub,
 	EventHub
@@ -21,8 +22,10 @@ struct CloudConfig {
 	char *key;
 	const char *id;
 	unsigned long lastPublishTime = 0;
-	String fullSas;
-	String endPoint;
+	const char* fullSas;
+	const char * postUrl;
+	const char * hubUser;
+	const char * getUrl;
 };
 
 class DataElement {
@@ -43,22 +46,23 @@ private:
 	aJsonObject *paJsonObj;
 };
 
+typedef void(*GeneralFunction) (String AzureData);
+
 class AzureIoTHub
 {
 public:
 	int senddata = 0;
 	bool connect(),
 		push(DataElement *data);
-	void begin(CloudMode _mode, String cs);
+	void begin(String cs);
+	void setCallback(GeneralFunction _az);
 private:
+	static GeneralFunction az;
+	static void callback(char* topic, byte* payload, unsigned int length);
 	const char *GetStringValue(String value);
 	String splitStringByIndex(String data, char separator, int index),
 		urlEncode(const char* msg),
-		buildHttpRequest(String data),
-		createIotHubSas(char *key, String url),
-		createEventHubSas(char *key, String url);
-	void initialiseIotHub(),
-		initialiseEventHub();
+		createIotHubSas(char *key, String url);
 };
 
 extern AzureIoTHub Azure;

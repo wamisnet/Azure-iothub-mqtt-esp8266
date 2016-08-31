@@ -4,103 +4,67 @@ WiFiClientSecure tlsClient;
 
 CloudConfig cloud;
 
-// Azure IoT Hub Settings
-const char* TARGET_URL = "/devices/";
-const char* IOT_HUB_END_POINT = "/messages/events?api-version=2015-08-15-preview";
+WiFiClientSecure espClient;
+PubSubClient mqtt(espClient);
 
-// Azure Event Hub settings
-const char* EVENT_HUB_END_POINT = "/ehdevices/publishers/nodemcu/messages";
+GeneralFunction AzureIoTHub::az;
 
-char buffer[256];
-
-void AzureIoTHub::begin(CloudMode _mode, String cs)
+void AzureIoTHub::callback(char * topic, byte * payload, unsigned int length)
 {
-	cloud.cloudMode = _mode;
+	String _azuredata;
+	for (int i = 0; i < length; i++)_azuredata += (char)payload[i];
+	az(_azuredata);
+}
+
+void AzureIoTHub::begin(String cs){
 	cloud.host = GetStringValue(splitStringByIndex(splitStringByIndex(cs, ';', 0), '=', 1));
 	cloud.id = GetStringValue(splitStringByIndex(splitStringByIndex(cs, ';', 1), '=', 1));
 	cloud.key = (char*)GetStringValue(splitStringByIndex(splitStringByIndex(cs, ';', 2), '=', 1));
-	switch (cloud.cloudMode) {
-	case IoTHub:
-		initialiseIotHub();
-		break;
-	case EventHub:
-		initialiseEventHub();
-		break;
-	}
+	cloud.postUrl = GetStringValue("devices/"+ (String)cloud.id+ "/messages/events/");
+	cloud.hubUser= GetStringValue((String)cloud.host + "/" + (String)cloud.id);
+	cloud.fullSas = GetStringValue(createIotHubSas(cloud.key, urlEncode(cloud.host) + "/devices/" + (String)cloud.id));
+	cloud.getUrl = GetStringValue("devices/" + (String)cloud.id + "/messages/devicebound/#");
+	mqtt.setServer(cloud.host, 8883);
 }
 
-
-bool AzureIoTHub::push(DataElement *data)
-{
-	int bytesWritten = 0;
-
-	// https://msdn.microsoft.com/en-us/library/azure/dn790664.aspx  
-
-
-	if (!tlsClient.connected()) { connect(); }
-	if (!tlsClient.connected()) { return false; }
-
+ void AzureIoTHub::setCallback(GeneralFunction _az){
+	 mqtt.setCallback(this->callback);//Azureからのデータを受けた時コールバックする
+	 az = _az;
+ }
+bool AzureIoTHub::push(DataElement *data){
 	char* sendData = data->toCharArray();
-	tlsClient.flush();
-	//Serial.println( buildHttpRequest(sendData));
-	bytesWritten = tlsClient.print(buildHttpRequest(sendData));
+	mqtt.publish(cloud.postUrl, sendData);
 	free(sendData);
+}
 
-	String response = "";
-	String chunk = "";
-	int limit = 1;
-
-	do {
-		if (tlsClient.connected()) {
-			yield();
-			chunk = tlsClient.readStringUntil('\n');
-			response += chunk;
+bool AzureIoTHub::connect()
+{
+	mqtt.loop();
+	while (!mqtt.connected()) {
+		Serial.print("Attempting MQTT connection...");
+		if (mqtt.connect(cloud.id, cloud.hubUser, cloud.fullSas)) {
+			Serial.println("connected");
+			// ... and resubscribe
+			mqtt.subscribe(cloud.getUrl);//Azureからのデータを監視する
 		}
-	} while (chunk.length() > 0 && ++limit < 100);
-
-	Serial.print("Bytes sent ");
-	Serial.print(bytesWritten);
-	Serial.print(", Memory ");
-	Serial.print(ESP.getFreeHeap());
-	Serial.print(", Response chunks ");
-	Serial.print(limit);
-	Serial.print(", Response code: ");
-
-	if (response.length() > 12) {
-		String code = response.substring(9, 12);
-		Serial.println(code);
-		if (code.equals("204"))return true;
+		else {
+			Serial.print("failed, rc=");
+			Serial.print(mqtt.state());
+			Serial.println(" try again in 5 seconds");
+			// Wait 5 seconds before retrying
+			delay(5000);
+		}
 	}
-	else {
-		Serial.println("unknown");
-		return false;
-	}
-
 }
 
-
-
-String AzureIoTHub::buildHttpRequest(String data)
-{
-	return "POST " + cloud.endPoint + " HTTP/1.1\r\n" +
-		"Host: " + cloud.host + "\r\n" +
-		"Authorization: SharedAccessSignature " + cloud.fullSas + "\r\n" +
-		"Content-Type: application/atom+xml;type=entry;charset=utf-8\r\n" +
-		"Content-Length: " + data.length() + "\r\n\r\n" + data;
-}
-
-
-
-const char * AzureIoTHub::GetStringValue(String value)
-{
+const char * AzureIoTHub::GetStringValue(String value){
 	int len = value.length() + 1;
 	char *temp = new char[len];
 	value.toCharArray(temp, len);
 	return temp;
 }
 
-String AzureIoTHub::splitStringByIndex(String data, char separator, int index)
-{
+String AzureIoTHub::splitStringByIndex(String data, char separator, int index){
 	int found = 0;
 	int strIndex[] = { 0, -1 };
 	int maxIndex = data.length() - 1;
@@ -115,8 +79,7 @@ String AzureIoTHub::splitStringByIndex(String data, char separator, int index)
 	return found>index ? data.substring(strIndex[0], strIndex[1]) : "";
 }
 
-String AzureIoTHub::urlEncode(const char * msg)
-{
+String AzureIoTHub::urlEncode(const char * msg){
 	const char *hex = "0123456789abcdef";
 	String encodedMsg = "";
 
@@ -134,31 +97,6 @@ String AzureIoTHub::urlEncode(const char * msg)
 		msg++;
 	}
 	return encodedMsg;
-}
-
-bool AzureIoTHub::connect()
-{
-	if (tlsClient.connected()) { return true; }
-	Serial.print(cloud.id);
-	Serial.print(" connecting to ");
-	Serial.println(cloud.host);
-	if (!tlsClient.connect(cloud.host, 443)) {      // Use WiFiClientSecure class to create TLS connection
-		Serial.println("Azure connection failed. ");
-		return false;
-	}
-}
-void AzureIoTHub::initialiseEventHub()
-{
-	String url = urlEncode("https://") + urlEncode(cloud.host) + urlEncode(EVENT_HUB_END_POINT);
-	cloud.endPoint = EVENT_HUB_END_POINT;
-	cloud.fullSas = createEventHubSas(cloud.key, url);
-}
-
-void AzureIoTHub::initialiseIotHub()
-{
-	String url = urlEncode(cloud.host) + urlEncode(TARGET_URL) + (String)cloud.id;
-	cloud.endPoint = (String)TARGET_URL + (String)cloud.id + (String)IOT_HUB_END_POINT;
-	cloud.fullSas = createIotHubSas(cloud.key, url);
 }
 
 String AzureIoTHub::createIotHubSas(char * key, String url)
@@ -186,35 +124,8 @@ String AzureIoTHub::createIotHubSas(char * key, String url)
 	base64_encode(encodedSign, sign, HASH_LENGTH);
 
 	// SharedAccessSignature
-	return "sr=" + url + "&sig=" + urlEncode(encodedSign) + "&se=" + cloud.sasExpiryDate;
+	return "SharedAccessSignature sr=" + url + "&sig=" + urlEncode(encodedSign) + "&se=" + cloud.sasExpiryDate;
 	// END: create SAS  
-}
-
-String AzureIoTHub::createEventHubSas(char * key, String url)
-{
-	// START: Create SAS  
-	// https://azure.microsoft.com/en-us/documentation/articles/service-bus-sas-overview/
-	// Where to get seconds since the epoch: local service, SNTP, RTC
-
-	String stringToSign = url + "\n" + cloud.sasExpiryDate;
-
-	// START: Create signature
-	Sha256.initHmac((const uint8_t*)key, 44);
-	Sha256.print(stringToSign);
-
-	char* sign = (char*)Sha256.resultHmac();
-	int signLen = 32;
-	// END: Create signature
-
-	// START: Get base64 of signature
-	int encodedSignLen = base64_enc_len(signLen);
-	char encodedSign[encodedSignLen];
-	base64_encode(encodedSign, sign, signLen);
-	// END: Get base64 of signature
-
-	// SharedAccessSignature
-	return "sr=" + url + "&sig=" + urlEncode(encodedSign) + "&se=" + cloud.sasExpiryDate + "&skn=" + cloud.id;
-	// END: create SAS
 }
 
 
