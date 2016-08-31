@@ -7,6 +7,7 @@ CloudConfig cloud;
 WiFiClientSecure espClient;
 PubSubClient mqtt(espClient);
 
+GeneralFunction AzureIoTHub::az;
 
 char buffer[256];
 void AzureIoTHub::callback(char * topic, byte * payload, unsigned int length)
@@ -16,7 +17,7 @@ void AzureIoTHub::callback(char * topic, byte * payload, unsigned int length)
 	}
 	String _azuredata = "testdata";//payload;
 	Serial.println(_azuredata);
-	//az(_azuredata);
+	az(_azuredata);
 }
 
 void AzureIoTHub::begin(String cs){
