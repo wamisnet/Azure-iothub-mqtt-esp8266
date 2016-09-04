@@ -1,0 +1,16 @@
+{
+    "name": "AzureIoTHub",
+    "keywords": "Azure, mqtt, hub, iot",
+    "description": "Azure IoT Hub",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/wamisnet/Azure-iothub-mqtt-esp8266.git"
+    },
+    "version": "1.0",
+    "exclude": "doc",
+    "examples": "examples/*/*.ino",
+    "frameworks": "arduino",
+    "platforms": [
+        "espressif"
+    ]
+}
