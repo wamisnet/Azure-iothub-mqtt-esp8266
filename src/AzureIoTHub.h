@@ -4,7 +4,6 @@
 #include <WiFiClientSecure.h>
 #include "sha256.h"
 #include "Base64.h"
-#include <WiFiUdp.h>
 #include <ESP8266WiFi.h>
 #include "aJson/aJSON.h"
 #include "pubsubclient/PubSubClient.h"
