@@ -39,22 +39,23 @@ bool AzureIoTHub::push(DataElement *data){
 
 bool AzureIoTHub::connect()
 {
-	mqtt.loop();
+	
 	while (!mqtt.connected()) {
-		Serial.print("Attempting MQTT connection...");
+		Serial.print(F("Attempting MQTT connection..."));
 		if (mqtt.connect(cloud.id, cloud.hubUser, cloud.fullSas)) {
-			Serial.println("connected");
+			Serial.println(F("connected"));
 			// ... and resubscribe
 			mqtt.subscribe(cloud.getUrl);//Azure‚©‚ç‚Ìƒf[ƒ^‚ğŠÄ‹‚·‚é
 		}
 		else {
-			Serial.print("failed, rc=");
+			Serial.print(F("failed, rc="));
 			Serial.print(mqtt.state());
-			Serial.println(" try again in 5 seconds");
+			Serial.println(F(" try again in 5 seconds"));
 			// Wait 5 seconds before retrying
 			delay(5000);
 		}
 	}
+	mqtt.loop();
 }
 
 const char * AzureIoTHub::GetStringValue(String value){
