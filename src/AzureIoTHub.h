@@ -4,7 +4,13 @@
 #include <WiFiClientSecure.h>
 #include "sha256.h"
 #include "Base64.h"
+
+#ifdef ESP32
+#include <WiFi.h>
+#elif ESP8266
 #include <ESP8266WiFi.h>
+#endif
+
 #include "aJson/aJSON.h"
 #include "pubsubclient/PubSubClient.h"
 enum CloudMode {
