@@ -1,7 +1,7 @@
 {
-    "name": "AzureIoTHub",
-    "keywords": "Azure, mqtt, hub, iot",
-    "description": "Azure IoT Hub",
+    "name": "EspAzureIoTHub",
+    "keywords": "Azure, mqtt, hub, iot , ESP",
+    "description": "Esp Azure IoT Hub",
     "repository": {
         "type": "git",
         "url": "https://github.com/wamisnet/Azure-iothub-mqtt-esp8266.git"

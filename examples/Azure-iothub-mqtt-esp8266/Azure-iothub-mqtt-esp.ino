@@ -1,4 +1,4 @@
-#include <AzureIoTHub.h>
+#include <EspAzureIoTHub.h>
 
 void setup() {
   Serial.begin(115200);

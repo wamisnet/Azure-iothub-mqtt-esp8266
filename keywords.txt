@@ -6,7 +6,7 @@
 # Datatypes (KEYWORD1)
 #######################################
 
-AzureIoTHub	KEYWORD1
+EspAzureIoTHub	KEYWORD1
 DataElement	KEYWORD1
 
 #######################################
