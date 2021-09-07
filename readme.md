@@ -1,15 +1,15 @@
 
-# Žg—p•û–@‚É‚Â‚¢‚Ä
-IoTHub > IoTƒfƒoƒCƒX‚©‚çƒfƒoƒCƒX‚ðì¬‚µ‚Ä‚­‚¾‚³‚¢B
-Ú‘±•¶Žš—ñ‚ªkey‚Æ‚È‚è‚Ü‚·B
+# ä½¿ç”¨æ–¹æ³•ã«ã¤ã„ã¦
+IoTHub > IoTãƒ‡ãƒã‚¤ã‚¹ã‹ã‚‰ãƒ‡ãƒã‚¤ã‚¹ã‚’ä½œæˆã—ã¦ãã ã•ã„ã€‚
+æŽ¥ç¶šæ–‡å­—åˆ—ãŒkeyã¨ãªã‚Šã¾ã™ã€‚
 
 
 
-# ƒ‰ƒCƒuƒ‰ƒŠ‚ÌÐ‰î
-–{ƒŠƒ|ƒWƒgƒŠ‚Í‚±‚¿‚ç‚Ìƒ‰ƒCƒuƒ‰ƒŠ‚©‚ç‚ÌƒtƒH[ƒN‚Å‚·B
+# ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã®ç´¹ä»‹
+æœ¬ãƒªãƒã‚¸ãƒˆãƒªã¯ã“ã¡ã‚‰ã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã‹ã‚‰ã®ãƒ•ã‚©ãƒ¼ã‚¯ã§ã™ã€‚
 https://github.com/wamisnet/Azure-iothub-mqtt-esp8266
 
-MicrosoftŒöŽ®‚Ìƒ‰ƒCƒuƒ‰ƒŠ‚Í‚±‚¿‚ç‚Å‚·B
+Microsoftå…¬å¼ã®ãƒ©ã‚¤ãƒ–ãƒ©ãƒªã¯ã“ã¡ã‚‰ã§ã™ã€‚
 https://github.com/Azure/azure-iot-arduino
 
 # License
