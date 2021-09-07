@@ -4,7 +4,7 @@
     "description": "Esp Azure IoT Hub",
     "repository": {
         "type": "git",
-        "url": "https://github.com/wamisnet/Azure-iothub-mqtt-esp8266.git"
+        "url": "https://github.com/HelloSmartFactory/Azure-iothub-mqtt-esp8266"
     },
     "version": "1.0",
     "exclude": "doc",
